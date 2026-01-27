@@ -36,6 +36,8 @@ import os
 import re
 from pathlib import Path
 from typing import Optional
+import webbrowser
+import subprocess
 
 VT_API_KEY = os.getenv("VT_API_KEY", "bc5a70cedd5cd23448b561b554b1909a1458c98f462d14979fb7b96915ce58f2")
 
@@ -914,7 +916,7 @@ class SmartAutomationWidget:
     # ------------------------------------------------------------------
     # Performance/Clarity Update Methods
     # ------------------------------------------------------------------
-
+    
     def on_task_complete(self, result: 'AutomationResult'):
         """
         Callback from the background thread. MUST use root.after() for thread safety.
@@ -3572,6 +3574,9 @@ class EnhancedPyUninstallXPro:
                 "Device Manager": ("devmgmt.msc", ""),
                 "Event Viewer": ("eventvwr.msc", ""),
                 "Group Policy Editor": ("gpedit.msc", "")
+            },
+            "Virus and Security": {
+                "Windows Security": ("windowsdefender:", ""),
             }
         }
         
@@ -4399,14 +4404,23 @@ class EnhancedPyUninstallXPro:
         self.clean_junk_btn.configure(state="disabled" if operation_active or not self.junk_files else "normal")
         self.cancel_junk_btn.configure(state="normal" if operation_active else "disabled")
 
-    def launch_tool(self, name: str, executable: str):
-        """Launch system tool"""
+    def launch_tool(self, name, command):
+        """Enhanced launcher that handles both executables and system protocols"""
         try:
-            subprocess.Popen(executable, shell=True)
-            self.logger.log(f"Launched {name}", LogLevel.INFO)
+            self.logger.log(f"Launching {name}...", LogLevel.INFO)
+        
+            # FIX: Check if the command is the Windows Security protocol
+            if command == "windowsdefender:":
+                # webbrowser.open triggers the Windows Shell to handle the protocol correctly
+                import webbrowser
+                webbrowser.open("windowsdefender://")
+            else:
+                # Standard subprocess call for regular .exe and .msc files
+                subprocess.Popen(command, shell=True)
+            
         except Exception as e:
-            self.logger.log(f"Failed to launch {name}: {str(e)}", LogLevel.ERROR)
-            messagebox.showerror("Error", f"Failed to launch {name}:\n{str(e)}")
+            self.logger.log(f"Failed to launch {name}: {e}", LogLevel.ERROR)
+            messagebox.showerror("Launch Error", f"Could not start {name}: {e}")
 
     def clear_logs(self):
         """Clear the log display"""
