@@ -39,7 +39,7 @@ from typing import Optional
 import webbrowser
 import subprocess
 
-VT_API_KEY = os.getenv("VT_API_KEY", "bc5a70cedd5cd23448b561b554b1909a1458c98f462d14979fb7b96915ce58f2")
+VT_API_KEY = os.getenv("VT_API_KEY", "Write_Your_API")
 
 # === Data Classes ===
 @dataclass
@@ -4742,3 +4742,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
