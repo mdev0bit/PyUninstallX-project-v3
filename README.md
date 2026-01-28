@@ -15,7 +15,7 @@ More responsive interface during high-load operations
 
 Better memory management and CPU usage
 
-Smother and lighter on the GPU
+Smother and lighter on the CPU and RAM
 
 🧠 Smarter Threat Evaluation
 Behavioral analysis enhancements
